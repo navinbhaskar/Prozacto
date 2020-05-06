@@ -45,19 +45,20 @@ class Assistant(models.Model):
         return self.name
 
 class Appointment(models.Model):
-    STATUS = (
+	STATUS = (
 			('Pending', 'Pending'),
 			('Declined', 'Declined'),
 			('Approved', 'Approved'),
 			)
 
-    patient = models.ForeignKey(Patient, null=True, on_delete= models.SET_NULL)
-    doctor = models.ForeignKey(Doctor, null=True, on_delete= models.SET_NULL)
-    date_created = models.DateTimeField(auto_now_add=True, null=True)
-    status = models.CharField(max_length=200, null=True, choices=STATUS)
+	patient = models.ForeignKey(Patient, null=True, on_delete= models.SET_NULL)
+	doctor = models.ForeignKey(Doctor, null=True, on_delete= models.SET_NULL)
+	timing = models.DateTimeField(null=True, blank=True)
+	date_created = models.DateTimeField(auto_now_add=True, null=True)
+	status = models.CharField(max_length=200, null=True, choices=STATUS)
 
-    def __str__(self):
-	       return self.patient.name + " - " + self.doctor.name
+	def __str__(self):
+		return self.patient.name + " - " + self.doctor.name
 
 class Medical_Records(models.Model):
     title = models.CharField(max_length=200, null=True)
@@ -66,5 +67,5 @@ class Medical_Records(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, null=True)
     shared_with = models.ManyToManyField(Doctor,  blank=True)
 
-    #def __str__(self):
-    #    return self.title + " " + self.patient.name
+    def __str__(self):
+        return self.title + " " + self.patient.name

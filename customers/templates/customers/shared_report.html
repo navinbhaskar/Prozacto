@@ -1,0 +1,30 @@
+<div class="text-nowrap" style="width: 8rem;">
+  Medical Reports
+</div>
+<div class="row">
+	<div class="col-md">
+		<div class="card card-body">
+			<table class="table table-sm">
+				<tr>
+          <th>Patient Name</th>
+					<th>Title</th>
+          <th>Uploaded At</th>
+					<th>View Medical Records</th>
+          <th>Action</th>
+				</tr>
+
+				{% for medical_record in medical_record_list %}
+
+				<tr>
+          <td>{{medical_record.patient.name}}</td>
+          <td>{{medical_record.title}}</td>
+          <td>{{medical_record.date_created}}</td>
+          <td>{{medical_record.document}}</td>
+					<td><a class="btn btn-sm btn-info" href="">Download</a></td>
+				</tr>
+				{% endfor %}
+
+			</table>
+		</div>
+	</div>
+</div>

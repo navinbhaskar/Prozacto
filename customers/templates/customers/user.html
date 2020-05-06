@@ -1,7 +1,10 @@
 {%  extends 'customers/main.html' %}
 {% block content %}
 {%  include 'customers/user_details.html' %}
-<strong> Clinic List </<strong>
+{%  include 'customers/my_appointments.html' %}
+<div class="text-nowrap" style="width: 8rem;">
+  Clinic List
+</div>
 <div class="row">
 	<div class="col-md">
 		<div class="card card-body">
@@ -9,7 +12,7 @@
 				<tr>
 					<th>Name</th>
 					<th>Address</th>
-					<th></th>
+					<th>Action</th>
 				</tr>
 
 				{% for clinic in clinics %}

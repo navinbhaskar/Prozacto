@@ -66,30 +66,44 @@ def logoutUser(request):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['patient'])
+@allowed_users(allowed_roles=['patient', 'doctor', 'assistant'])
 def home(request):
     #orders = request.user.doctor.appointment_set.all()
     #return HttpResponse(orders.count())
-    name = request.user.patient.name
-    phone = request.user.patient.phone
-    email = request.user.patient.email
+    if(hasattr(request.user, 'patient')):
+        name = request.user.patient.name
+        phone = request.user.patient.phone
+        email = request.user.patient.email
 
-    total_appointments = request.user.patient.appointment_set.all()
+        total_appointments = request.user.patient.appointment_set.all()
 
-    approved = total_appointments.filter(status='Approved').count()
-    pending = total_appointments.filter(status='Pending').count()
+        approved = total_appointments.filter(status='Approved').count()
+        pending = total_appointments.filter(status='Pending').count()
 
-    clinic = Clinic.objects.all();
-    context = {'clinics':clinic, 'name': name, 'phone': phone, 'email': email, 'approved': approved, 'pending': pending }
-    return render(request, 'customers/user.html', context)
-
+        clinic = Clinic.objects.all();
+        context = {'clinics':clinic, 'name': name, 'phone': phone, 'email': email, 'approved': approved, 'pending': pending, 'greeting': name, 'appointments': total_appointments }
+        return render(request, 'customers/user.html', context)
+    elif(hasattr(request.user, 'doctor')):
+        appointments = request.user.doctor.appointment_set.all()
+        medical_record = Medical_Records.objects.filter(shared_with__id=request.user.doctor.id)
+        print(medical_record)
+        context = {'medical_record_list': medical_record, 'appointments': appointments, 'greeting': request.user.doctor.name }
+        return render(request, 'customers/doctor_dashboard.html', context)
+    elif(hasattr(request.user, 'assistant')):
+        clinic_name = request.user.assistant.clinic
+        doctors_list = Doctor.objects.filter(clinic=clinic_name)
+        appointments = Appointment.objects.filter(doctor__in=doctors_list)
+        context = {'doctors': doctors_list, 'clinic': clinic_name, 'appointments': appointments, 'greeting': request.user.assistant.name }
+        return render(request, 'customers/assistant_dashboard.html', context)
+    else:
+        return HttpResponse("You are not authorized to view this page!")
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['patient'])
 def get_doctors(request, clinic_id):
     doctors_list = Doctor.objects.filter(clinic__id=clinic_id)
     my_records = request.user.patient.medical_records_set.all()
-    context = {'doctors': doctors_list, 'records': my_records }
+    context = {'doctors': doctors_list, 'records': my_records, "greeting": request.user.patient.name }
     return render(request, 'customers/doctors_list.html', context)
 
 
@@ -97,7 +111,7 @@ def get_doctors(request, clinic_id):
 @allowed_users(allowed_roles=['patient'])
 def view_records(request):
     my_records = request.user.patient.medical_records_set.all()
-    context = {'records': my_records }
+    context = {'records': my_records, "greeting": request.user.patient.name }
     return render(request, 'customers/my_records.html', context)
 
 
@@ -115,7 +129,7 @@ def request_appointment(request, doc_id):
 def show_record_list(request, doc_id):
     my_records = request.user.patient.medical_records_set.all()
     doc = Doctor.objects.get(id=doc_id)
-    context = {'records': my_records, 'doc': doc }
+    context = {'records': my_records, 'doc': doc, "greeting": request.user.patient.name }
     return render(request, 'customers/share_records.html', context)
 
 
@@ -123,10 +137,7 @@ def show_record_list(request, doc_id):
 @allowed_users(allowed_roles=['patient'])
 def share_record(request, doc_id, record_id):
     doc = Doctor.objects.get(id=doc_id)
-    print(doc)
-    print(record_id)
     Medical_Record= Medical_Records.objects.get(id=record_id)
-    print(Medical_Record)
     Medical_Record.shared_with.add(doc)
     return redirect('home')
 
@@ -150,8 +161,75 @@ def upload_record(request):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['doctor', 'assistant'])
+@allowed_users(allowed_roles=['doctor'])
 def view_appointments(request):
     appointments = request.user.doctor.appointment_set.all()
-    print(appointments)
-    return HttpResponse("Yaay")
+    medical_record = Medical_Records.objects.filter(shared_with__id=request.user.doctor.id)
+    print(medical_record)
+    context = {'medical_record_list': medical_record, 'appointments': appointments }
+    return render(request, 'customers/appointments.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['doctor'])
+def get_report(request, patient_id):
+    medical_record = Medical_Records.objects.filter(patient__id=patient_id, shared_with__id=request.user.doctor.id)
+    name = Patient.objects.get(id=patient_id).name
+    context = {'medical_record_list': medical_record, "name": name, 'greeting': request.user.doctor.name }
+    return render(request, 'customers/patient_record.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['doctor'])
+def shared_report(request):
+    medical_record = Medical_Records.objects.filter(shared_with__id=request.user.doctor.id)
+    print(medical_record)
+    context = {'medical_record_list': medical_record}
+    return render(request, 'customers/patient_record.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['assistant'])
+def confirm_appointment(request, appointment_id):
+    Appointment.objects.filter(id=appointment_id).update(status='Approved')
+    return redirect('home')
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['assistant'])
+def change_appointment_timing(request, appointment_id):
+    print(request.POST)
+    timing = request.POST.get('timing')
+    if(timing):
+        Appointment.objects.filter(id=appointment_id).update(timing=timing)
+        return redirect('home')
+    return render(request, "customers/change_time.html")
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['patient'])
+def shared_with(request):
+    all_shares=[]
+    for record in Medical_Records.objects.filter(patient=request.user.patient).prefetch_related('shared_with'):
+        print(record.shared_with.all())
+        for doc in record.shared_with.all():
+            print(doc)
+            data={
+                "doctor": doc.name,
+                "doctor_id": doc.id,
+                "document_title": record.title,
+                "document": record.document,
+                "document_id": record.id
+            }
+            all_shares.append(data)
+    print(all_shares)
+    context = {"data": all_shares, "greeting": request.user.patient.name}
+    return render(request, 'customers/shared_with.html', context)
+
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['patient'])
+def revoke_access(request, document_id, doctor_id):
+    doc = Doctor.objects.get(id=doctor_id)
+    Medical_Record= Medical_Records.objects.get(id=document_id)
+    Medical_Record.shared_with.remove(doc)
+    return redirect('shared_with')

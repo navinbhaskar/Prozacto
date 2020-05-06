@@ -1,30 +1,10 @@
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<!------ Include the above in your HEAD tag ---------->
+
 <style>
-  body
-{
-    font-family: 'Lato', 'sans-serif';
-    }
+
 .profile
 {
-    min-height: 355px;
+    min-height: 300px;
     display: inline-block;
-    }
-figcaption.ratings
-{
-    margin-top:20px;
-    }
-figcaption.ratings a
-{
-    color:#f1c40f;
-    font-size:11px;
-    }
-figcaption.ratings a:hover
-{
-    color:#f39c12;
-    text-decoration:none;
     }
 .divider
 {
@@ -56,29 +36,53 @@ span.tags
 <div class="container">
 	<div class="row">
 
-    	 <div class="well profile">
+    	 <div>
             <div class="col-sm-12">
-                <div class="col-xs-12 col-sm-8">
+                <div>
                     <h2>{{name}}</h2>
                     <p><strong>Phone number: </strong> {{phone}} </p>
                     <p><strong>Email id: </strong> {{email}} </p>
-                    <td><a class="btn btn-sm btn-info" href="{% url 'view_records' %}">View Medical Records</a></td>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <a class="btn btn-sm btn-info" href="{% url 'view_records' %}">My Medical Records</a>
+                      </div>
+                      <div class="col-sm-6">
+                        <a class="btn btn-sm btn-info" href="{% url 'shared_with' %}">View shared records</a>
+                      </div>
+                    </div>
                 </div>
 
             </div>
-            <div class="col-xs-12 divider text-center">
-                <div class="col-xs-12 col-sm-4 emphasis">
-                    <h2><strong> {{approved}} </strong></h2>
-                    <p><small>Appointments</small></p>
-                </div>
-                <div class="col-xs-12 col-sm-4 emphasis">
-                    <h2><strong>{{pending}}</strong></h2>
-                    <p><small>Pending Request</small></p>
-                </div>
-
-            </div>
-
     	 </div>
 
 	</div>
+  <br>
+  <div class="row">
+  	<div>
+  		<div class="col-md">
+  			<div class="card text-center text-white  mb-2" id="total-orders">
+  			  	<div class="card-header">
+  			  		<h5 class="card-title">Appointments</h5>
+  			  	</div>
+  			  	<div class="card-body">
+  			    	<h3 class="card-title">{{approved}}</h3>
+  			  	</div>
+  			</div>
+  		</div>
+  	</div>
+
+  	<div>
+  		<div class="col-md">
+  			<div class="card text-center text-white  mb-2" id="orders-delivered">
+  			  	<div class="card-header">
+  			  		<h5 class="card-title">Pending Request</h5>
+  			  	</div>
+  			  	<div class="card-body">
+  			    	<h3 class="card-title">{{pending}}</h3>
+  			  	</div>
+  			</div>
+  		</div>
+  	</div>
+
+  </div>
 </div>

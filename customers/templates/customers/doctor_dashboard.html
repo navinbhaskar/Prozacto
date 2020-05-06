@@ -1,0 +1,40 @@
+{%  extends 'customers/main.html' %}
+{% block content %}
+<div class="text-nowrap" style="width: 8rem;">
+  My Appointments
+</div>
+<div class="row">
+	<div class="col-md">
+		<div class="card card-body">
+			<table class="table table-sm">
+				<tr>
+					<th>Name</th>
+					<th>Status</th>
+          <th>Date Created</th>
+          <th>Appointment Date</th>
+					<th>View Medical Records</th>
+				</tr>
+
+				{% for appointment in appointments %}
+
+				<tr>
+          <td>{{appointment.patient.name}}</td>
+          {% if appointment.status == "Approved" %}
+					     <td><span class="badge badge-success">{{appointment.status}}</span></td>
+          {% else %}
+              <td><span class="badge badge-warning">{{appointment.status}}</span></td>
+          {% endif %}
+          <td>{{appointment.date_created}}</td>
+          <td>{{appointment.timing}}</td>
+					<td><a class="btn btn-sm btn-info" href="{% url 'get_report' appointment.patient.id %}">View</a></td>
+				</tr>
+				{% endfor %}
+
+			</table>
+		</div>
+	</div>
+</div>
+
+{%  include 'customers/shared_report.html' %}
+
+{% endblock content %}

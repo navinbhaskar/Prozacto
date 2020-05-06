@@ -19,6 +19,12 @@ urlpatterns = [
     path('upload_record/', views.upload_record, name="upload_record"),
     path('share_record/<str:doc_id>/<str:record_id>/', views.share_record, name="share_record"),
     path('view_appointments/', views.view_appointments, name="view_appointments"),
+    path('get_report/<str:patient_id>/', views.get_report, name="get_report"),
+    path('shared_report/', views.shared_report, name="shared_report"),
+    path('confirm_appointment/<str:appointment_id>/', views.confirm_appointment, name="confirm_appointment"),
+    path('change_appointment_timing/<str:appointment_id>/', views.change_appointment_timing, name="change_appointment_timing"),
+    path('shared_with/', views.shared_with, name="shared_with"),
+    path('revoke_access/<str:document_id>/<str:doctor_id>/', views.revoke_access, name="revoke_access"),
 ]
 
 '''

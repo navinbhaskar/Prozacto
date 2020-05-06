@@ -1,0 +1,35 @@
+{%  extends 'customers/main.html' %}
+{% block content %}
+<a class="btn btn-primary" href="{% url 'home' %}" role="button">Back</a>
+<div class="text-nowrap" style="width: 8rem;">
+  Your Medical Records are shared with following Doctors-
+</div>
+<div class="row">
+	<div class="col-md">
+		<div class="card card-body">
+			<table class="table table-sm">
+				<tr>
+          <th>Title</th>
+          <th>Document</th>
+					<th>Doctor</th>
+          <th>Action 1</th>
+          <th>Action 2</th>
+				</tr>
+
+				{% for doc in data %}
+
+				<tr>
+          <td>{{doc.document_title}}</td>
+          <td>{{doc.document}}</td>
+          <td>{{doc.doctor}}</td>
+          <td><a class="btn btn-sm btn-info" href="">Download</a></td>
+					<td><a class="btn btn-sm btn-info" href="{% url 'revoke_access' doc.document_id doc.doctor_id %}">Revoke Access</a></td>
+				</tr>
+				{% endfor %}
+
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}

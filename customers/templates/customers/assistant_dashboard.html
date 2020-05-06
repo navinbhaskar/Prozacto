@@ -1,0 +1,34 @@
+{%  extends 'customers/main.html' %}
+{% block content %}
+
+<div class="text-nowrap" style="width: 8rem;">
+  Doctor List of {{clinic.name}}
+</div>
+<div class="row">
+	<div class="col-md">
+		<div class="card card-body">
+			<table class="table table-sm">
+				<tr>
+					<th>Name</th>
+					<th>Specialization</th>
+          <th>Phone Number</th>
+          <th>Email Id</th>
+				</tr>
+
+        {% for doctor in doctors %}
+
+        <tr>
+          <td>{{doctor.name}}</td>
+          <td>{{doctor.specialization}}</td>
+          <td>{{doctor.phone}}</td>
+          <td>{{doctor.email}}</td>
+        </tr>
+        {% endfor %}
+
+			</table>
+		</div>
+	</div>
+</div>
+{%  include 'customers/clinic_appointments.html' %}
+
+{% endblock content %}
