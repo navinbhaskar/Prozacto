@@ -1,0 +1,33 @@
+{%  extends 'customers/main.html' %}
+{% block content %}
+
+<a class="btn btn-primary" href="{% url 'home' %}" role="button">Back</a>
+
+<div class="row">
+	<div class="col-md">
+		<div class="card card-body">
+			<table class="table table-sm">
+				<tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th></th>
+          <th></th>
+          <th></th>
+				</tr>
+
+        {% for doctor in doctors %}
+
+        <tr>
+          <td>{{doctor.name}}</td>
+          <td>{{doctor.specialization}}</td>
+          <td><a class="btn btn-sm btn-info" href="{% url 'show_record_list' doctor.id %}">Share Your Medical Records</a></td>
+          <td><a class="btn btn-sm btn-info" href="{% url 'request_appointment' doctor.id %}">Make Appointment</a></td>
+        </tr>
+        {% endfor %}
+
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}

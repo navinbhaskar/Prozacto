@@ -1,0 +1,31 @@
+{%  extends 'customers/main.html' %}
+{% block content %}
+
+<a class="btn btn-primary" href="{% url 'home' %}" role="button">Back</a>
+
+
+<a class="btn btn-secondary btn-lg active" role="button" aria-pressed="true" href="{% url 'upload_record' %}">Upload new Record</a>
+<div class="row">
+	<div class="col-md">
+		<div class="card card-body">
+			<table class="table table-sm">
+				<tr>
+					<th>Title</th>
+					<th>Document</th>
+					<th></th>
+				</tr>
+
+        {% for record in records %}
+
+        <tr>
+          <td>{{record.title}}</td>
+          <td>{{record.document}}</td>
+        </tr>
+        {% endfor %}
+
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
