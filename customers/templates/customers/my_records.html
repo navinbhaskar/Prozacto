@@ -4,7 +4,7 @@
 <a class="btn btn-primary" href="{% url 'home' %}" role="button">Back</a>
 
 
-<a class="btn btn-secondary btn-lg active" role="button" aria-pressed="true" href="{% url 'upload_record' %}">Upload new Record</a>
+<a class="btn btn-primary" role="button" aria-pressed="true" href="{% url 'upload_record' %}">Upload new Record</a>
 <div class="row">
 	<div class="col-md">
 		<div class="card card-body">
@@ -22,7 +22,7 @@
           <td>{{record.title}}</td>
           <td>{{record.document}}</td>
 					<td>{{record.date_created}}</td>
-					<td><a class="btn btn-sm btn-info" href="">Download</a></td>
+					<td><a href="/images/121420.png" class="btn btn-secondary px-4 py-2 btn-sm">Download</a></td>
         </tr>
         {% endfor %}
 
