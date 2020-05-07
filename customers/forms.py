@@ -8,13 +8,7 @@ from .models import *
 class MedicalRecordsForm(ModelForm):
 	class Meta:
 		model = Medical_Records
-		fields = ['title', 'document', 'shared_with']
-
-# class OrderForm(ModelForm):
-# 	class Meta:
-# 		model = Order
-# 		fields = '__all__'
-
+		fields = ['title', 'document']
 
 class CreateUserForm(UserCreationForm):
 	class Meta:

@@ -1,6 +1,6 @@
 {%  extends 'customers/main.html' %}
 {% block content %}
-
+{% load static %}
 <a class="btn btn-primary" href="{% url 'home' %}" role="button">Back</a>
 
 
@@ -22,7 +22,7 @@
           <td>{{record.title}}</td>
           <td>{{record.document}}</td>
 					<td>{{record.date_created}}</td>
-					<td><a href="/images/121420.png" class="btn btn-secondary px-4 py-2 btn-sm">Download</a></td>
+					<td><a href="{% url 'download' record.id %}" class="btn btn-secondary px-4 py-2 btn-sm">Download</a></td>
         </tr>
         {% endfor %}
 

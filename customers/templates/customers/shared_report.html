@@ -16,11 +16,11 @@
 				{% for medical_record in medical_record_list %}
 
 				<tr>
-          <td>{{medical_record.patient.name}}</td>
-          <td>{{medical_record.title}}</td>
-          <td>{{medical_record.date_created}}</td>
-          <td>{{medical_record.document}}</td>
-					<td><a class="btn btn-sm btn-info" href="">Download</a></td>
+		          <td>{{medical_record.patient.name}}</td>
+		          <td>{{medical_record.title}}</td>
+		          <td>{{medical_record.date_created}}</td>
+		          <td>{{medical_record.document}}</td>
+					<td><a class="btn btn-sm btn-info" href="{% url 'download' medical_record.id %}">Download</a></td>
 				</tr>
 				{% endfor %}
 

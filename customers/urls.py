@@ -25,6 +25,7 @@ urlpatterns = [
     path('change_appointment_timing/<str:appointment_id>/', views.change_appointment_timing, name="change_appointment_timing"),
     path('shared_with/', views.shared_with, name="shared_with"),
     path('revoke_access/<str:document_id>/<str:doctor_id>/', views.revoke_access, name="revoke_access"),
+    path('download/<str:document_id>/', views.download, name="download"),
 ]
 
 '''

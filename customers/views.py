@@ -12,8 +12,7 @@ from django.contrib.auth.models import Group
 
 from .models import *
 from .forms import *
-#from .filters import OrderFilter
-from .decorators import unauthenticated_user, allowed_users#, admin_only
+from .decorators import unauthenticated_user, allowed_users
 
 # Create your views here.
 @unauthenticated_user
@@ -68,8 +67,6 @@ def logoutUser(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['patient', 'doctor', 'assistant'])
 def home(request):
-    #orders = request.user.doctor.appointment_set.all()
-    #return HttpResponse(orders.count())
     if(hasattr(request.user, 'patient')):
         name = request.user.patient.name
         phone = request.user.patient.phone
@@ -86,7 +83,6 @@ def home(request):
     elif(hasattr(request.user, 'doctor')):
         appointments = request.user.doctor.appointment_set.all()
         medical_record = Medical_Records.objects.filter(shared_with__id=request.user.doctor.id)
-        print(medical_record)
         context = {'medical_record_list': medical_record, 'appointments': appointments, 'greeting': request.user.doctor.name }
         return render(request, 'customers/doctor_dashboard.html', context)
     elif(hasattr(request.user, 'assistant')):
@@ -165,7 +161,6 @@ def upload_record(request):
 def view_appointments(request):
     appointments = request.user.doctor.appointment_set.all()
     medical_record = Medical_Records.objects.filter(shared_with__id=request.user.doctor.id)
-    print(medical_record)
     context = {'medical_record_list': medical_record, 'appointments': appointments }
     return render(request, 'customers/appointments.html', context)
 
@@ -183,7 +178,6 @@ def get_report(request, patient_id):
 @allowed_users(allowed_roles=['doctor'])
 def shared_report(request):
     medical_record = Medical_Records.objects.filter(shared_with__id=request.user.doctor.id)
-    print(medical_record)
     context = {'medical_record_list': medical_record}
     return render(request, 'customers/patient_record.html', context)
 
@@ -197,7 +191,6 @@ def confirm_appointment(request, appointment_id):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['assistant'])
 def change_appointment_timing(request, appointment_id):
-    print(request.POST)
     timing = request.POST.get('timing')
     if(timing):
         Appointment.objects.filter(id=appointment_id).update(timing=timing)
@@ -210,9 +203,7 @@ def change_appointment_timing(request, appointment_id):
 def shared_with(request):
     all_shares=[]
     for record in Medical_Records.objects.filter(patient=request.user.patient).prefetch_related('shared_with'):
-        print(record.shared_with.all())
         for doc in record.shared_with.all():
-            print(doc)
             data={
                 "doctor": doc.name,
                 "doctor_id": doc.id,
@@ -221,7 +212,6 @@ def shared_with(request):
                 "document_id": record.id
             }
             all_shares.append(data)
-    print(all_shares)
     context = {"data": all_shares, "greeting": request.user.patient.name}
     return render(request, 'customers/shared_with.html', context)
 
@@ -233,3 +223,11 @@ def revoke_access(request, document_id, doctor_id):
     Medical_Record= Medical_Records.objects.get(id=document_id)
     Medical_Record.shared_with.remove(doc)
     return redirect('shared_with')
+
+def download(request, document_id):
+    object_name= Medical_Records.objects.get(id=document_id)
+    filename = object_name.document.name.split('/')[-1]
+    response = HttpResponse(object_name.document, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+    return response

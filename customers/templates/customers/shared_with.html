@@ -19,10 +19,10 @@
 				{% for doc in data %}
 
 				<tr>
-          <td>{{doc.document_title}}</td>
-          <td>{{doc.document}}</td>
-          <td>{{doc.doctor}}</td>
-          <td><a class="btn btn-sm btn-info" href="">Download</a></td>
+			        <td>{{doc.document_title}}</td>
+			        <td>{{doc.document}}</td>
+			        <td>{{doc.doctor}}</td>
+			        <td><a href="{% url 'download' doc.document_id %}" class="btn btn-sm btn-info">Download</a>
 					<td><a class="btn btn-sm btn-info" href="{% url 'revoke_access' doc.document_id doc.doctor_id %}">Revoke Access</a></td>
 				</tr>
 				{% endfor %}
