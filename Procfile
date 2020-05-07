@@ -1,1 +1,1 @@
-web: gunicorn prozacto.wsgi --log-file
+web: gunicorn prozacto.wsgi --log-file -
